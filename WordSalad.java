@@ -95,72 +95,88 @@ public class WordSalad implements Iterable<String> {
      * @return WordSalad[] array of split WordSalads.
      */
     public WordSalad[] distribute(int k){
-        
-        WordSalad[] blocks = new WordSalad[k];
-        
-        for(int j = 0; j < k; j++){
-            blocks[j] = new WordSalad();
-	}
-        
-	WordNode position = this.first;
-
+	// Uses distribute with a subset equal to the entire WordSalad.
+	return distribute(k, this.first, this.last);
+    }
+    
+    /**
+     * Distributes a subset of words into k blocks as if dealing cards.
+     * @param k the number of blocks.
+     * @param start the first in the subset.
+     * @param end the last in the subset.
+     * @return WordSalad[] array of split WordSalads.
+     */
+    private WordSalad[] distribute(int k, WordNode start, WordNode end) {
         int i = 0;
-        while(position != null){
-            
-            if(i >= k){
-                i = 0;
+        WordSalad[] hands = new WordSalad[k];
+        for (int j=0; j<k; j++){
+            hands[j] = new WordSalad();
+	}
+	WordNode pointer = start;
+	String s;
+        while (pointer.next != null || pointer != end){
+	    s = pointer.word;
+	    pointer = pointer.next;
+            if (s != null){
+                hands[i].addLast(s);
             }
-            blocks[i].addLast(position.word);
-            i++;
-            if(position.next == null){
-                return blocks;
-            } else {
-                position = position.next;
-            }
+            if(i>=(k-1)){i=0;}else{i++;} // iterate over k
         }
-        return blocks;
+        return hands;
     }
 
+    
     /**
      * Distributes the words into k nearly even length blocks.
      * @param k the number of blocks.
-     * @return cell is a WordSalad[] array of split words.
+     * @return cellBlock is a WordSalad[] array of split words.
      */
     public WordSalad[] chop(int k) {
 	int i = 0;
 	WordNode curr = first;
+	int count = 0;
+        
+        // Counts until wordLimit of block has been reached.
+	int wordLimitCount = 1;
+
+        //Counts number of words in list
 	while(curr!=null){
 	    curr=curr.next;
 	    i++;
 	}
 
-	//how many words each WordSalad should have
-	int each = i/k;
-	//remainder of words after each WordSalad is of equal length
+        //The word limit of each WordSalad based off words and blocks.
+        int wordLimit = i/k;
+        //Finds the remainder to check if extra words need to be added
 	int remainder = i%k;
-	int a = 0;
-	int b = 1;
-	
-	WordSalad[] cell = new WordSalad[k];
-	for(int j = 0;j<k;j++){
-	    cell[j] = new WordSalad();
+
+        //Creates new WordSalad of number of blocks.
+	WordSalad[] cellBlock = new WordSalad[k];
+
+       
+	for(int x = 0; x<k; x++){
+	    cellBlock[x] = new WordSalad();
 	}
 
+        //Adds words into WordSalad block until block limit has been reached.
         for(String s: this){
 	    if(s != null){
-		cell[a].addLast(s);
+		cellBlock[count].addLast(s);
 	    }
-	    if(b<each+(a<remainder?1:0)){
-		b++;
+            
+	    if(wordLimitCount<wordLimit+(count<remainder?1:0)){
+		wordLimitCount++;
 	    }else{
-		b = 1;
-		a++;
+		wordLimitCount = 1;
+		count++;
 	    }
 	}
-	return cell;
+	return cellBlock;
     }
         
     public WordSalad[] split(int k) {
+
+        
         return null;
     }
         
@@ -173,13 +189,13 @@ public class WordSalad implements Iterable<String> {
      * @return w the result of rejoining the blocks into one WordSalad.
      */    
     public static WordSalad join(WordSalad[] blocks) {
-	WordSalad w = new WordSalad();
+	WordSalad joined = new WordSalad();
 	for(WordSalad block: blocks){
 	    for(String s: block){
-		w.addLast(s);
+		joined.addLast(s);
 	    }
 	}
-	return w;	
+	return joined;	
     }
 
     public static WordSalad recombine(WordSalad[] blocks, int k) {
