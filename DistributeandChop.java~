@@ -1,0 +1,97 @@
+import java.util.*;
+import java.lang.Math;
+
+public class DistributeWords{
+    public static void main(String[] args){
+
+    List<String> wordList = new ArrayList<String>();
+    wordList.add("The");
+    wordList.add("quick");
+    wordList.add("brown");
+    wordList.add("fox");
+    wordList.add("jumps");
+    wordList.add("over");
+    wordList.add("the");
+    wordList.add("lazy");
+    wordList.add("dog");
+    wordList.add("Last");
+
+    int k = 3;
+   
+    int wordCount = 0;
+    double extras =(wordList.size()/k);
+    double count = (Math.floor(extras));
+      
+    
+   String[][] distributed = new String[k][wordList.size()];
+   
+      
+       for(int r = 0; r<k;r++){
+          for(int x = 0; x<(int)count; x++){
+          distributed[r][x] = wordList.get(wordCount);
+          System.out.println(distributed[r][x]);
+          wordCount++;
+                  
+        }
+       }
+       
+       
+        if(wordList.size()%k > 0){
+         for(int rr = 0; rr<k; rr++){
+           while(wordList.size()>wordCount){
+           distributed[rr][k] = wordList.get(wordCount);
+           System.out.println(distributed[rr][k]);
+           wordCount++;
+           
+          
+         }
+        }
+       }
+     System.out.println(distributed[0][3]);
+     
+    
+    
+     /** wordCount = 0;
+       for(int x = 0; x<(int)count; x++){
+         for(int r = 0; r<k;r++){
+          
+          distributed[r][x] = wordList.get(wordCount);
+          System.out.println(distributed[r][x]);
+          wordCount++;
+         }
+       }
+      System.out.println(wordCount);
+      if(wordList.size()%k > 0){
+         for(int rr = 0; rr<k; rr++){
+           while(wordList.size()>wordCount){
+           distributed[rr][k] = wordList.get(wordCount);
+           System.out.println(distributed[rr][k]);
+           System.out.println(wordCount);
+           wordCount++;
+           
+          
+         }
+        }
+       }
+     
+      System.out.println(distributed[0][3]);
+      */
+     /**String joinedString = "";
+     for(int r = 0; r<k;r++){
+          for(int x = 0; x<(int)count; x++){
+          joinedString = joinedString + distributed[r][x] + " ";
+          
+         }
+       }
+      if(wordList.size()%k > 0){
+         for(int rr = 0; rr<k; rr++){
+           joinedString = joinedString + distributed[rr][k] + " ";
+         }
+      }
+          
+     System.out.println(joinedString);
+     */
+  
+    }
+   
+ }
