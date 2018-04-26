@@ -138,6 +138,9 @@ public class WordSalad implements Iterable<String> {
         
         // Counts until wordLimit of block has been reached.
 	int wordLimitCount = 1;
+        
+        //Creates new WordSalad of number of blocks.
+	WordSalad[] cellBlock = new WordSalad[k];
 
         //Counts number of words in list
 	while(curr!=null){
@@ -145,38 +148,31 @@ public class WordSalad implements Iterable<String> {
 	    i++;
 	}
 
+        for(int x = 0; x<k; x++){
+	    cellBlock[x] = new WordSalad();
+	}
+
         //The word limit of each WordSalad based off words and blocks.
         int wordLimit = i/k;
         //Finds the remainder to check if extra words need to be added
 	int remainder = i%k;
-
-        //Creates new WordSalad of number of blocks.
-	WordSalad[] cellBlock = new WordSalad[k];
-
-       
-	for(int x = 0; x<k; x++){
-	    cellBlock[x] = new WordSalad();
-	}
-
+  
         //Adds words into WordSalad block until block limit has been reached.
-        for(String s: this){
-	    if(s != null){
-		cellBlock[count].addLast(s);
+        for(String word: this){
+	    if(word != null){
+		cellBlock[count].addLast(word);
 	    }
-            
-	    if(wordLimitCount<wordLimit+(count<remainder?1:0)){
+	    if(wordLimitCount<(wordLimit+(count<remainder?1:0))){
 		wordLimitCount++;
 	    }else{
-		wordLimitCount = 1;
-		count++;
+                count++;
+		wordLimitCount = 1;	
 	    }
 	}
 	return cellBlock;
     }
         
     public WordSalad[] split(int k) {
-
-        
         return null;
     }
         
