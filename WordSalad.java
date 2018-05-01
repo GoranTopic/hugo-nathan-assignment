@@ -89,7 +89,7 @@ public class WordSalad implements Iterable<String> {
      * @param size the number of blocks you want
      * @return blocks an array of WordSalad obj's
      */
-     public WordSalad[] divide(int size) {
+    public WordSalad[] divide(int size) {
         
         WordSalad[] blocks = new WordSalad[size];
         
@@ -106,7 +106,7 @@ public class WordSalad implements Iterable<String> {
      * @return blocks[] array of WordSalad obj's
      */
     public WordSalad[] split(int size) {
-      return null;
+        return null;
     }
     
     /**
@@ -116,7 +116,7 @@ public class WordSalad implements Iterable<String> {
      * @return result a single WordSalad obj
      */
     public static WordSalad recombine(WordSalad[] blocks, int k){
-      return null;
+        return null;
     }
     
     /**
@@ -151,92 +151,116 @@ public class WordSalad implements Iterable<String> {
     }
     
     /**
-     * NOT WORKING.
-     * Required method: Distributes the words into k nearly even length blocks.
+     * WORKING.
+     * Required method: Chops the words into k nearly even length blocks.
      * @param k the number of blocks.
      * @return cellBlock is a WordSalad[] array of split words.
      */
-     public WordSalad[] chop(int k) {
-       //Creates new WordSalad of number of blocks.
-       WordSalad[] cellBlock = this.divide(k);
+    public WordSalad[] chop(int k) {
+        //Creates new WordSalad of number of blocks.
+        WordSalad[] cellBlock = this.divide(k);
        
-       //Counts number of words in list
-       int i = 0;
-       WordNode curr = first;
-       while(curr != null){
-         curr = curr.next;
-         i++;
-       }
+        //Counts number of words in list
+        int i = 0;
+        WordNode curr = first;
+        while(curr != null){
+            curr = curr.next;
+            i++;
+        }
        
-       for(int x = 0; x < k; x++){
-         cellBlock[x] = new WordSalad();
-       }
-       // Counts until wordLimit of block has been reached.
-       int wordLimitCount = 1;
-       //The word limit of each WordSalad based off words and blocks.
-       int wordLimit = i / k;
-       //Finds the remainder to check if extra words need to be added
-       int remainder = i % k;
+        for(int x = 0; x < k; x++){
+            cellBlock[x] = new WordSalad();
+        }
+        // Counts until wordLimit of block has been reached.
+        int wordLimitCount = 1;
+        //The word limit of each WordSalad based off words and blocks.
+        int wordLimit = i / k;
+        //Finds the remainder to check if extra words need to be added
+        int remainder = i % k;
        
-       //Adds words into WordSalad block until block limit has been reached.
-       int count = 0;
-       for(String word : this){
-         if(word != null){
-           cellBlock[count].addLast(word);
-         }
-         if(wordLimitCount < (wordLimit + (count < remainder ? 1 : 0))){
-           wordLimitCount++;
-         } else {
-           count++;
-           wordLimitCount = 1; 
-         }
-       }
-       return cellBlock;
-     }
+        //Adds words into WordSalad block until block limit has been reached.
+        int count = 0;
+        for(String word : this){
+            if(word != null){
+                cellBlock[count].addLast(word);
+            }
+            if(wordLimitCount < (wordLimit + (count < remainder ? 1 : 0))){
+                wordLimitCount++;
+            } else {
+                count++;
+                wordLimitCount = 1; 
+            }
+        }
+        return cellBlock;
+    }
       
     /**
-     * NOT WORKING.
-     * Required method: The opposite of distribute, this removes the n then n + 1 etc words from all blocks adding it to a singular one.
+     * WORKING.
+     * Required method: The opposite of distribute, removes the nth words from all blocks.
      * @param blocks an array of WordSalad objects each with their own words
      * @return result a singular WordSalad object with all the merged words in it
      */
     public static WordSalad merge(WordSalad[] blocks) {
-      WordSalad result = new WordSalad();
-      
-      int sentenceLen = 0;
-      for( WordSalad block : blocks){
-        WordNode position = block.first;
-        while(position != null){
-            sentenceLen++;
-            if(position.next == null){
-                break;
-            } else {
-                position = position.next;
+        WordSalad result = new WordSalad();
+        //Loop below counts sentence length
+        int sentenceLen = 0;
+        for(WordSalad block : blocks){
+            WordNode position = block.first;
+            while(position != null){
+                sentenceLen++;
+                if(position.next == null){
+                    break;
+                } else {
+                    position = position.next;
+                }
             }
         }
-      }
-      WordNode blockIndex = null;
-      for(int added = 0; added < sentenceLen; added++){
-            for(WordSalad block : blocks){
-                WordNode currentWord = blockIndex;
+        
+        WordNode blockIndex = null;
+        int added = 0;
+        for(int maxi = 0; maxi < sentenceLen; maxi++){ //Interate worst case times
+            if(added == sentenceLen){ //Break if finished
+                break;
+            } else {
+                for(WordSalad block : blocks){
+                    blockIndex = block.first;
+                    if(maxi == 0){ //First time add first word in list
+                        result.addLast(blockIndex.word);
+                        added++;
+                    } else {
+                        if(blockIndex.next == null){
+                            break;
+                        } else {
+                            for(int i = 0; i < maxi; i++){ //Find position. Add that.
+                                if(blockIndex.next == null){
+                                    break;
+                                } else {
+                                    blockIndex = blockIndex.next;
+                                }
+                            }
+                            result.addLast(blockIndex.word);
+                            added++;
+                        }
+                    }
+                }
             }
-      }
-      return null;
+        }
+        return result;
     }
 
     /**
      * WORKING.
-     * Required method: Rejoins a sequence of blocks one after the other.
+     * Required method: Opposite of Chop. Rejoins a sequence of blocks one after the other.
      * @param blocks the blocks of words that are to be rejoined.
      * @return w the result of rejoining the blocks into one WordSalad.
      */    
     public static WordSalad join(WordSalad[] blocks) {
-      WordSalad joined = new WordSalad();
-      for(WordSalad block: blocks){
-        for(String s: block){
-          joined.addLast(s);
+        WordSalad joined = new WordSalad();
+        for(WordSalad block: blocks){
+            for(String s: block){
+                joined.addLast(s);
+            }
         }
-      }
-      return joined;
+        return joined;
     }
 }
